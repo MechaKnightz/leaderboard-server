@@ -4,7 +4,9 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "nodemon src/index.js",
+    "start:ci": "node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -17,7 +19,13 @@
   },
   "homepage": "https://github.com/MechaKnightz/website-server#readme",
   "dependencies": {
+    "apollo-datasource": "^0.7.2",
     "apollo-server": "^2.19.1",
-    "graphql": "^15.4.0"
+    "graphql": "^15.4.0",
+    "jest": "^26.6.3",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^1.12.0",
+    "mysql2": "^2.2.5",
+    "nodemon": "^2.0.6"
   }
 }
