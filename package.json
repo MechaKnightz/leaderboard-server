@@ -2,11 +2,11 @@
   "name": "website-server",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "src/server.js",
   "scripts": {
     "test": "jest",
-    "start": "nodemon src/index.js",
-    "start:ci": "node src/index.js"
+    "start": "nodemon src/server.js",
+    "start:ci": "node src/server.js"
   },
   "repository": {
     "type": "git",
