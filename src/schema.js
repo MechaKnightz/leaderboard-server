@@ -8,6 +8,10 @@ type Speedrun {
 	milliseconds: Int
 	date: Date
 	type: SpeedrunType
+  description: String
+  url: String
+  verifier: User
+  submitter: User
 }
 
 type Query {
