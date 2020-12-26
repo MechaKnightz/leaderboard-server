@@ -1,24 +1,37 @@
 const { DataSource } = require('apollo-datasource');
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
 class DefaultAPI extends DataSource {
-	constructor(dbinfo) {
+  constructor(dbinfo) {
     super();
-    
-    this.connection = mysql.createConnection(dbinfo);
-	}
 
-	initialize(config) {
+    this.pool = mysql.createPool({
+      ...dbinfo,
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0
+    });
+  }
+
+  initialize(config) {
     this.context = config.context;
-    
-  }
-  
-  async getSpeedrun({ id }) {
 
   }
 
-  async getAllSpeedruns({ id }) {
+  async getSpeedrunById({ id }) {
 
+  }
+
+  async getAllSpeedruns() {
+    const [rows, fields] = await this.pool.query("select * from speedruns");
+    return Array.isArray(rows)
+      ? rows.map(row => this.speedrunReducer(row))
+      : [];
+  }
+
+  speedrunReducer(speedrun) {
+    console.log(speedrun);
+    return speedrun;
   }
 }
 

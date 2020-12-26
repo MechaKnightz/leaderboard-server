@@ -1,14 +1,15 @@
 require('dotenv').config();
 
-const { ApolloServer, gql } = require('apollo-server');
+const { ApolloServer } = require('apollo-server');
 const typeDefs = require('./schema');
 const resolvers = require('./resolvers');
 const DefaultAPI = require('./datasources/default');
 const jwt = require('jsonwebtoken');
 const jwksClient = require('jwks-rsa');
+const AuthAPI = require('./datasources/auth');
 
 const client = jwksClient({
-  jwksUri: `https://${AUTH0_DOMAIN}/.well-known/jwks.json`
+  jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`
 });
 
 function getKey(header, cb){
@@ -29,6 +30,7 @@ const server = new ApolloServer({
   resolvers,
   context: ({ req }) => {
     const token = req.headers.authorization;
+    if(!token) return { user: null };
     const user = new Promise((resolve, reject) => {
       jwt.verify(token, getKey, options, (err, decoded) => {
         if(err) {
@@ -45,10 +47,11 @@ const server = new ApolloServer({
   dataSources: () => ({
     defaultAPI: new DefaultAPI({
       host: process.env.DB_HOST,
-      username: process.env.DB_USER,
+      user: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME
-    })
+    }),
+    authAPI: new AuthAPI(process.env.AUTH0_DOMAIN)
   })
 });
 

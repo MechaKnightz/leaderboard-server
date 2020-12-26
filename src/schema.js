@@ -4,17 +4,17 @@ const typeDefs = gql`
 
 type Speedrun {
 	id: ID!
-	site: String
-	milliseconds: Int
-	date: Date
-	type: SpeedrunType
+	time: Int!
+	date: Date!
+	type: SpeedrunType!
   description: String
   url: String
   verifier: User
-  submitter: User
+  submitter: User!
 }
 
 type Query {
+  speedruns: [Speedrun]!
 	speedrun(id: ID!): Speedrun
 }
 
