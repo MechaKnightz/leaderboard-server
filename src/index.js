@@ -40,6 +40,9 @@ const server = new ApolloServer({
       });
     });
 
+    user.catch((e) => {
+    })
+
     return {
       user
     };

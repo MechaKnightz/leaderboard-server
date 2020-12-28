@@ -30,7 +30,7 @@ class DefaultAPI extends DataSource {
   }
 
   speedrunReducer(speedrun) {
-    console.log(speedrun);
+    console.log(this.context)
     return speedrun;
   }
 }
