@@ -12,8 +12,8 @@ const client = jwksClient({
   jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`
 });
 
-function getKey(header, cb){
-  client.getSigningKey(header.kid, function(err, key) {
+function getKey(header, cb) {
+  client.getSigningKey(header.kid, function (err, key) {
     var signingKey = key.publicKey || key.rsaPublicKey;
     cb(null, signingKey);
   });
@@ -21,7 +21,7 @@ function getKey(header, cb){
 
 const options = {
   audience: process.env.AUTH0_AUDIENCE,
-  issuer: process.env.AUTH0_DOMAIN,
+  issuer: `https://${process.env.AUTH0_DOMAIN}/`,
   algorithms: ['RS256']
 };
 
@@ -30,32 +30,41 @@ const server = new ApolloServer({
   resolvers,
   context: ({ req }) => {
     const token = req.headers.authorization;
-    if(!token) return { user: null };
+    //if(req.headers.origin == "http://localhost:3000")
+    //  console.log(req.headers);
+    if (!token) return { user: null };
     const user = new Promise((resolve, reject) => {
+      try { 
       jwt.verify(token, getKey, options, (err, decoded) => {
-        if(err) {
+        if (err) {
           return reject(err);
         }
         resolve(decoded.email);
       });
-    });
+    } catch (e) {
+      reject(e);
+    }
+  });
 
-    user.catch((e) => {
-    })
+user.catch((e) => {
+})
 
-    return {
-      user
-    };
+user.then((user) => {
+})
+
+return {
+  user
+};
   },
-  dataSources: () => ({
-    defaultAPI: new DefaultAPI({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      database: process.env.DB_NAME
-    }),
-    authAPI: new AuthAPI(process.env.AUTH0_DOMAIN)
-  })
+dataSources: () => ({
+  defaultAPI: new DefaultAPI({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME
+  }),
+  authAPI: new AuthAPI(process.env.AUTH0_DOMAIN)
+})
 });
 
 server.listen().then(() => {

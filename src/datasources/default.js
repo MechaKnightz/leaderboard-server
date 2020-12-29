@@ -29,8 +29,17 @@ class DefaultAPI extends DataSource {
       : [];
   }
 
+  async getAllSpeedrunsOfType(type) {
+
+    const [rows, fields] = await this.pool.execute(
+      'select * from speedruns where type=?',
+      [type]);
+    return Array.isArray(rows)
+      ? rows.map(row => this.speedrunReducer(row))
+      : [];
+  }
+
   speedrunReducer(speedrun) {
-    console.log(this.context)
     return speedrun;
   }
 }

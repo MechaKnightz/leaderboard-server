@@ -15,6 +15,7 @@ type Speedrun {
 
 type Query {
   speedruns: [Speedrun]!
+  speedrunsOfType(type: SpeedrunType!): [Speedrun]!
 	speedrun(id: ID!): Speedrun
 }
 
