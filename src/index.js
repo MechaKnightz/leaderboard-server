@@ -33,38 +33,41 @@ const server = new ApolloServer({
     //if(req.headers.origin == "http://localhost:3000")
     //  console.log(req.headers);
     if (!token) return { user: null };
-    const user = new Promise((resolve, reject) => {
-      try { 
-      jwt.verify(token, getKey, options, (err, decoded) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(decoded.email);
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
+    let user = new Promise((resolve, reject) => {
+      try {
+        jwt.verify(token, getKey, options, (err, decoded) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(decoded);
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
 
-user.catch((e) => {
-})
+    user.catch((e) => {
+      user = null;
+    })
 
-user.then((user) => {
-})
-
-return {
-  user
-};
+    return {
+      user
+    };
   },
-dataSources: () => ({
-  defaultAPI: new DefaultAPI({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME
-  }),
-  authAPI: new AuthAPI(process.env.AUTH0_DOMAIN)
-})
+  dataSources: () => ({
+    defaultAPI: new DefaultAPI({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_NAME
+    }),
+    authAPI: new AuthAPI(process.env.AUTH0_DOMAIN, {
+      client_id: process.env.AUTH0_CLIENT_ID,
+      client_secret: process.env.AUTH0_BACKEND_CLIENT_SECRET,
+      audience: process.env.AUTH0_MANAGEMENT_AUDIENCE,
+      grant_type: "client_credentials"
+    })
+  })
 });
 
 server.listen().then(() => {

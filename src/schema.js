@@ -8,7 +8,7 @@ type Speedrun {
 	date: Date!
 	type: SpeedrunType!
   description: String
-  url: String
+  url: String!
   verifier: User
   submitter: User!
 }
@@ -17,14 +17,35 @@ type Query {
   speedruns: [Speedrun]!
   speedrunsOfType(type: SpeedrunType!): [Speedrun]!
 	speedrun(id: ID!): Speedrun
+  submittedRunsById(id: ID!): [Speedrun]!
+  userById(id: ID!): User
+}
+
+type Mutation {
+    submitSpeedrun(data: SubmitInput): SubmitResult
+  }
+
+type SubmitResult {
+  success: Boolean!
+  message: String!
+  speedrun: Speedrun
+}
+
+input SubmitInput {
+  date: Date!
+  time: Int!
+  description: String
+  url: String!
+  type: SpeedrunType!
 }
 
 type User {
 	id: ID!
 	name: String!
-	email: String!
+	email: String
 	submittedRuns: [Speedrun]!
-	token: String
+  description: String
+  avatar: String
 }
 
 enum SpeedrunType {
