@@ -11,11 +11,13 @@ type Speedrun {
   url: String!
   verifier: User
   submitter: User!
+  status: SpeedrunStatus!
 }
 
 type Query {
   speedruns: [Speedrun]!
   speedrunsOfType(type: SpeedrunType!): [Speedrun]!
+  verifiedSpeedrunsOfType(type: SpeedrunType!): [Speedrun]!
 	speedrun(id: ID!): Speedrun
   submittedRunsById(id: ID!): [Speedrun]!
   userById(id: ID!): User
@@ -46,6 +48,12 @@ type User {
 	submittedRuns: [Speedrun]!
   description: String
   avatar: String
+}
+
+enum SpeedrunStatus {
+  UNVERIFIED
+  VERIFIED
+  DECLINED
 }
 
 enum SpeedrunType {

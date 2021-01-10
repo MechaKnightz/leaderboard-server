@@ -4,6 +4,8 @@ module.exports = {
       dataSources.defaultAPI.getAllSpeedruns(),
     speedrunsOfType: async (_, { type }, { dataSources }) =>
       dataSources.defaultAPI.getAllSpeedrunsOfType(type),
+    verifiedSpeedrunsOfType: async (_, { type }, { dataSources }) =>
+      dataSources.defaultAPI.getAllVerifiedSpeedrunsOfType(type),
     speedrun: async (_, { id }, { dataSources }) =>
       dataSources.defaultAPI.getSpeedrunById(id),
     submittedRunsById: async (_, { id }, { dataSources }) =>
@@ -23,10 +25,10 @@ module.exports = {
   },
   Mutation: {
     submitSpeedrun: async (_, { data }, { dataSources }) => {
-			const speedrun = await dataSources.userAPI.submitSpeedrun(data);
-			if (speedrun) {
-				
-				return {
+      const speedrun = await dataSources.userAPI.submitSpeedrun(data);
+      if (speedrun) {
+
+        return {
           success: true,
           message: "Submitted speedrun successfully",
           speedrun
@@ -36,6 +38,6 @@ module.exports = {
         success: false,
         message: "Failed to submit speedrun",
       }
-		},
+    },
   }
 };

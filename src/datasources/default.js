@@ -74,6 +74,17 @@ class DefaultAPI extends DataSource {
       : [];
   }
 
+  async getAllVerifiedSpeedrunsOfType(type) {
+    const [rows, fields] = await this.pool.execute(
+      'select * from Speedruns where `Type` = ? AND `Status` = "VERIFIED" ORDER BY TIME',
+      [type]
+    );
+
+    return Array.isArray(rows)
+      ? rows.map(row => this.speedrunReducer(row))
+      : [];
+  }
+
   async getSubmitterByRunId(speedrunId) {
     const [rows, fields] = await this.pool.query(
       'SELECT Users.* FROM Users INNER JOIN Speedruns ON Speedruns.SubmitterID = Users.UserID AND Speedruns.SpeedrunID = ?',
@@ -132,7 +143,8 @@ class DefaultAPI extends DataSource {
       date: speedrun.Date,
       type: speedrun.Type,
       description: speedrun.Description,
-      url: speedrun.Url
+      url: speedrun.Url,
+      status: speedrun.Status
     };
   }
 
